@@ -4,10 +4,20 @@ import Loading from "../../Component/Loading";
 import ManageTaskRow from "./ManageTaskRow";
 import { Helmet } from "react-helmet";
 
+import { useContext } from "react";
+import { ThemeContext } from "../../provider/ThemeProvider";
+
 const ManageTask = () => {
   const axiosSecure = useAxiosSecure();
+  const { theme } = useContext(ThemeContext); // Access current theme
 
-  const { data: adminTask, isLoading, refetch } = useQuery({
+  const {
+    data: adminTask,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ["admin-task"],
     queryFn: async () => {
       const { data } = await axiosSecure.get("/admin-task");
@@ -15,18 +25,35 @@ const ManageTask = () => {
     },
   });
 
+  // Loading state
   if (isLoading) {
-    return <Loading></Loading>;
+    return <Loading />;
   }
 
-  // //console.log(adminTask);
+  // Error handling
+  if (isError) {
+    return (
+      <div
+        className={`p-4 text-center ${
+          theme === "light" ? "text-red-600" : "text-red-400"
+        }`}
+      >
+        <h2>Error: {error.message}</h2>
+      </div>
+    );
+  }
+
   return (
-    <div className="my-14">
+    <div
+      className={`my-14 ${theme === "light" ? "bg-white" : "bg-gray-800"} p-4`}
+    >
       <Helmet>
-                <title>Manage Tasks | TaskHive</title>
-            </Helmet>
+        <title>Manage Tasks | TaskHive</title>
+      </Helmet>
       <div className="overflow-x-auto">
-        <table className="table">
+        <table
+          className={`table ${theme === "light" ? "text-black" : "text-white"}`}
+        >
           {/* head */}
           <thead>
             <tr>
@@ -41,11 +68,7 @@ const ManageTask = () => {
           </thead>
           <tbody>
             {adminTask.map((task) => (
-              <ManageTaskRow
-                key={task._id}
-                task={task}
-                refetch={refetch}
-              ></ManageTaskRow>
+              <ManageTaskRow key={task._id} task={task} refetch={refetch} />
             ))}
           </tbody>
         </table>

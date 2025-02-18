@@ -13,11 +13,13 @@ import Loading from "../Loading";
 import { AuthContext } from "../../Providers/AuthProvider";
 import logo from "../../assets/logo.png";
 import { ThemeContext } from "../../provider/ThemeProvider";
+import { IoIosSunny } from "react-icons/io";
+import { IoMoonOutline } from "react-icons/io5";
 
 const Sidebar = () => {
   const [isActive, setActive] = useState(true);
   const { logOut } = useContext(AuthContext);
-  const { theme } = useContext(ThemeContext);
+  const { theme, toggleTheme } = useContext(ThemeContext);
   const [role, isLoading] = useRole();
   if (isLoading) {
     return <Loading />;
@@ -100,6 +102,15 @@ const Sidebar = () => {
               {role === "Worker" && <WorkerMenu />}
               {role === "Buyer" && <Buyer />}
               {role === "admin" && <AdminMenu />}
+
+              <button
+                className={`btn btn-sm btn-outline mx-4  ${
+                  theme === "light" ? "text-black" : "text-white"
+                }`}
+                onClick={toggleTheme}
+              >
+                {theme === "light" ? <IoIosSunny /> : <IoMoonOutline />}
+              </button>
             </nav>
           </div>
         </div>
