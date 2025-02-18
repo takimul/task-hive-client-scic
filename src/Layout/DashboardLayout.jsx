@@ -10,20 +10,26 @@ import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../hooks/useAxiosSecure";
 import Notify from "./Notify";
 import useAxiosPublic from "../hooks/useAxiosPublic";
+import { ThemeContext } from "../provider/ThemeProvider";
 
 const DashboardLayout = () => {
   const { loading, user } = useContext(AuthContext);
+  const { theme } = useContext(ThemeContext); // Access the current theme
   const axiosPublic = useAxiosPublic();
   const axiosSecure = useAxiosSecure();
 
-  const { data: notification, isLoading, refetch } = useQuery({
+  const {
+    data: notification,
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ["notification"],
     queryFn: async () => {
       const { data } = await axiosSecure.get(`/notification/${user?.email}`);
       return data;
     },
   });
-  
+
   const { data: count, isLoading: loadingCount } = useQuery({
     queryKey: ["email"],
     queryFn: async () => {
@@ -33,31 +39,40 @@ const DashboardLayout = () => {
       return data;
     },
   });
-  
 
   const [data] = useUser();
-  
+
   if (loading) {
-    return <Loading></Loading>;
+    return <Loading />;
   }
 
   if (isLoading || loadingCount) {
-    return <Loading></Loading>;
+    return <Loading />;
   }
+
+  // Conditional class names based on the theme
+  const navbarBg = theme === "light" ? "bg-base-200" : "bg-gray-600";
+  const textColor = theme === "light" ? "text-gray-800" : "text-white";
+  const coinColor = theme === "light" ? "text-amber-500" : "text-yellow-300";
+  const buttonColor = theme === "light" ? "text-gray-800" : "text-white";
+  const modalBg = theme === "light" ? "bg-gray-100" : "bg-gray-900";
+  const modalTextColor = theme === "light" ? "text-gray-800" : "text-white";
 
   return (
     <div className="md:flex">
       <div>
-        <Sidebar></Sidebar>
+        <Sidebar />
       </div>
 
-      <div className="flex-1 md:ml-64 ">
-        <nav className="md:fixed md:w-[80%] z-50 bg-base-200  py-2 flex gap-10 pr-5 items-center justify-end">
+      <div className="flex-1 md:ml-64">
+        <nav
+          className={`md:fixed md:min-w-full md:pr-80 z-50 ${navbarBg} py-2 flex gap-10 pr-5 items-center justify-end`}
+        >
           <div>
             <div className="flex gap-5">
               <p className="flex items-center gap-1">
                 <span>Coin: {data?.coins} </span>
-                <CiBitcoin className="text-xl text-amber-500" />{" "}
+                <CiBitcoin className={`text-xl ${coinColor}`} />
               </p>
               <div className="avatar">
                 <div className="w-11 rounded-full">
@@ -77,7 +92,7 @@ const DashboardLayout = () => {
             className="relative"
           >
             <svg
-              className="w-8 h-8 text-teal-600 animate-wiggle"
+              className={`w-8 h-8 ${buttonColor} animate-wiggle`}
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 21 21"
             >
@@ -93,21 +108,21 @@ const DashboardLayout = () => {
             </div>
           </button>
 
-          <dialog id="my_modal_2" className="modal">
+          <dialog id="my_modal_2" className={`modal ${modalBg}`}>
             <div className="modal-box max-h-[50vh] overflow-y-auto">
-              <p className="text-xl font-medium underline mb-2">
+              <p
+                className={`text-xl font-medium underline mb-2 ${modalTextColor}`}
+              >
                 Your Notification:
               </p>
               {!notification?.length && (
-                <p>You Have No Notification.Stay with us.</p>
+                <p className={modalTextColor}>
+                  You Have No Notification. Stay with us.
+                </p>
               )}
               <div>
                 {notification?.map((notify) => (
-                  <Notify
-                    key={notify._id}
-                    notify={notify}
-                    refetch={refetch}
-                  ></Notify>
+                  <Notify key={notify._id} notify={notify} refetch={refetch} />
                 ))}
               </div>
             </div>
@@ -115,13 +130,14 @@ const DashboardLayout = () => {
               <button>close</button>
             </form>
           </dialog>
-          {/* --------- */}
         </nav>
+
         <div className="min-h-screen mt-24">
-          <Outlet></Outlet>
+          <Outlet />
         </div>
+
         <div>
-          <Footer></Footer>
+          <Footer />
         </div>
       </div>
     </div>
