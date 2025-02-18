@@ -84,11 +84,3 @@ TaskHive is fully responsive and designed to work seamlessly across all devices.
 
 - [Node.js](https://nodejs.org/en/)
 - [MongoDB](https://www.mongodb.com/)
-
-## 🚀 Installation Guide
-
-### **1. Clone the Repository**
-
-```bash
-git clone https://github.com/your-username/task-hive-client.git
-```
