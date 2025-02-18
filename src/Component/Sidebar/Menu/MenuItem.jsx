@@ -1,26 +1,41 @@
-import PropTypes from 'prop-types'
-import { NavLink } from 'react-router-dom'
+import PropTypes from "prop-types";
+import { NavLink } from "react-router-dom";
+import { useContext } from "react";
+import { ThemeContext } from "../../../provider/ThemeProvider";
 
 const MenuItem = ({ label, address, icon: Icon }) => {
-    return (
-        <NavLink
-            to={address}
-            end
-            className={({ isActive }) =>
-                `flex items-center px-4 py-2 my-5  transition-colors duration-300 transform  hover:bg-gray-300   hover:text-gray-700 ${isActive ? 'bg-gray-300 border-l-2 border-black text-gray-700' : 'text-gray-600'
-                }`
-            }
-        >
-            <Icon className='w-5 h-5' />
+  const { theme } = useContext(ThemeContext); // Get the current theme
 
-            <span className='mx-4 font-medium'>{label}</span>
-        </NavLink>
-    )
-}
+  // Conditional class names based on the current theme
+  const activeBgColor = theme === "light" ? "bg-gray-300" : "bg-gray-700";
+  const hoverBgColor =
+    theme === "light" ? "hover:bg-gray-300" : "hover:bg-gray-600";
+  const textColor = theme === "light" ? "text-gray-600" : "text-white";
+  const activeTextColor = theme === "light" ? "text-gray-700" : "text-gray-100";
+  const borderColor = theme === "light" ? "border-black" : "border-gray-400";
+
+  return (
+    <NavLink
+      to={address}
+      end
+      className={({ isActive }) =>
+        `flex items-center px-4 py-2 my-5 transition-colors duration-300 transform ${hoverBgColor} ${textColor} ${
+          isActive
+            ? `${activeBgColor} border-l-2 ${borderColor} ${activeTextColor}`
+            : ""
+        }`
+      }
+    >
+      <Icon className="w-5 h-5" />
+      <span className="mx-4 font-medium">{label}</span>
+    </NavLink>
+  );
+};
+
 MenuItem.propTypes = {
-    label: PropTypes.string,
-    address: PropTypes.string,
-    icon: PropTypes.elementType,
-}
+  label: PropTypes.string,
+  address: PropTypes.string,
+  icon: PropTypes.elementType,
+};
 
-export default MenuItem
+export default MenuItem;
