@@ -7,14 +7,14 @@ import useUser from "../../hooks/useUser";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useNavigate } from "react-router-dom";
+import { ThemeContext } from "../../provider/ThemeProvider";
 
 const AddNewTask = () => {
   const { user } = useContext(AuthContext);
   const axiosSecure = useAxiosSecure();
-  
+  const { theme } = useContext(ThemeContext); // Get the current theme
   const [data, isLoading, refetch] = useUser();
   const navigate = useNavigate();
-  
 
   const [deadline, setStartDate] = useState(new Date());
 
@@ -63,18 +63,14 @@ const AddNewTask = () => {
           post_time: Date.now(),
         },
       };
-      
+
       const result = await axiosSecure.post("/add-task", task);
-      console.log(result.data.acknowledged)
       if (result.data.acknowledged) {
-        
-        
         const result = await axiosSecure.patch(
           `/decrease-coin/${user?.email}`,
           { value: required_workers * payable_amount }
         );
-        if(result.data.acknowledged
-        ){
+        if (result.data.acknowledged) {
           Swal.fire({
             position: "top-end",
             icon: "success",
@@ -85,16 +81,23 @@ const AddNewTask = () => {
           refetch();
           navigate("/dashboard/my-task");
         }
-        
-        
       }
-      
-    } catch (error) {
-      
-    }
-
-    
+    } catch (error) {}
   };
+
+  // Conditional styles based on the current theme
+  const inputBg = theme === "light" ? "bg-gray-50" : "bg-gray-700";
+  const inputBorder = theme === "light" ? "border-gray-300" : "border-gray-600";
+  const inputText = theme === "light" ? "text-gray-900" : "text-white";
+  const buttonBg = theme === "light" ? "bg-blue-700" : "bg-blue-600";
+  const buttonHover =
+    theme === "light" ? "hover:bg-blue-800" : "hover:bg-blue-700";
+  const focusRing =
+    theme === "light" ? "focus:ring-blue-500" : "focus:ring-blue-800";
+  const placeholderText =
+    theme === "light"
+      ? "dark:placeholder-gray-400"
+      : "dark:placeholder-gray-500";
 
   return (
     <div className="px-2">
@@ -106,7 +109,7 @@ const AddNewTask = () => {
           <div>
             <label
               htmlFor="task_title"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              className={`block mb-2 text-sm font-medium ${inputText}`}
             >
               Task Title
             </label>
@@ -114,7 +117,7 @@ const AddNewTask = () => {
               name="task_title"
               type="text"
               id="task_title"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className={`${inputBg} ${inputBorder} ${inputText} text-sm rounded-lg focus:ring-4 block w-full p-2.5 ${focusRing}`}
               placeholder="Your Task Title"
               required
             />
@@ -122,7 +125,7 @@ const AddNewTask = () => {
           <div>
             <label
               htmlFor="task_detail"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              className={`block mb-2 text-sm font-medium ${inputText}`}
             >
               Task Detail
             </label>
@@ -130,7 +133,7 @@ const AddNewTask = () => {
               name="task_detail"
               type="text"
               id="task_detail"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className={`${inputBg} ${inputBorder} ${inputText} text-sm rounded-lg focus:ring-4 block w-full p-2.5 ${focusRing}`}
               placeholder=" Your Task Detail"
               required
             />
@@ -138,7 +141,7 @@ const AddNewTask = () => {
           <div>
             <label
               htmlFor="required_workers"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              className={`block mb-2 text-sm font-medium ${inputText}`}
             >
               Required workers:
             </label>
@@ -146,7 +149,7 @@ const AddNewTask = () => {
               name="required_workers"
               type="text"
               id="required_workers"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className={`${inputBg} ${inputBorder} ${inputText} text-sm rounded-lg focus:ring-4 block w-full p-2.5 ${focusRing}`}
               placeholder="Required worker"
               required
             />
@@ -154,7 +157,7 @@ const AddNewTask = () => {
           <div>
             <label
               htmlFor="payable_amount"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              className={`block mb-2 text-sm font-medium ${inputText}`}
             >
               Payable Amount
             </label>
@@ -162,9 +165,8 @@ const AddNewTask = () => {
               name="payable_amount"
               type="number"
               id="payable_amount"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className={`${inputBg} ${inputBorder} ${inputText} text-sm rounded-lg focus:ring-4 block w-full p-2.5 ${focusRing}`}
               placeholder="Payable Amount"
-              pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"
               required
             />
           </div>
@@ -172,7 +174,7 @@ const AddNewTask = () => {
           <div>
             <label
               htmlFor="submission_info"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              className={`block mb-2 text-sm font-medium ${inputText}`}
             >
               Submission Info
             </label>
@@ -180,7 +182,7 @@ const AddNewTask = () => {
               name="submission_info"
               type="text"
               id="submission_info"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className={`${inputBg} ${inputBorder} ${inputText} text-sm rounded-lg focus:ring-4 block w-full p-2.5 ${focusRing}`}
               placeholder="Your Task Submission Info"
               required
             />
@@ -188,7 +190,7 @@ const AddNewTask = () => {
           <div className="">
             <label
               htmlFor="task_image"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              className={`block mb-2 text-sm font-medium ${inputText}`}
             >
               Task Image
             </label>
@@ -196,7 +198,7 @@ const AddNewTask = () => {
               name="task_image"
               type="file"
               id="task_image"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className={`${inputBg} ${inputBorder} ${inputText} text-sm rounded-lg focus:ring-4 block w-full p-2.5 ${focusRing}`}
               required
             />
           </div>
@@ -208,14 +210,14 @@ const AddNewTask = () => {
               Deadline:
             </label>
             <DatePicker
-              className="border p-2 rounded-md"
+              className={`border p-2 rounded-md ${inputBg} ${inputBorder} ${inputText}`}
               selected={deadline}
               onChange={(date) => setStartDate(date)}
             />
           </div>
         </div>
         <input
-          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          className={`${buttonBg} ${buttonHover} ${focusRing} text-white font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center`}
           type="submit"
           value="Add Task"
         />

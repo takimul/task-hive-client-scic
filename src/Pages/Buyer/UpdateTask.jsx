@@ -1,12 +1,137 @@
+// import { useNavigate, useParams } from "react-router-dom";
+// import Swal from "sweetalert2";
+// import useAxiosSecure from "../../hooks/useAxiosSecure";
+// import { useQuery } from "@tanstack/react-query";
+// import { useContext } from "react";
+// import { AuthContext } from "../../Providers/AuthProvider";
+
+// const UpdateTask = () => {
+//   const { user } = useContext(AuthContext);
+//   const axiosSecure = useAxiosSecure();
+//   const id = useParams().id;
+//   const navigate = useNavigate();
+
+//   const { data: data, refetch } = useQuery({
+//     queryKey: ["singleData"],
+//     queryFn: async () => {
+//       const { data } = await axiosSecure.get(`/single-task/${id}`);
+//       return data;
+//     },
+//   });
+
+//   const handleUpdataTask = async (e) => {
+//     e.preventDefault();
+//     const form = e.target;
+//     const task_title = form.task_title.value;
+//     const task_detail = form.task_detail.value;
+//     const submission_info = form.submission_info.value;
+
+//     const updateData = {
+//       task_title,
+//       task_detail,
+//       submission_info,
+//     };
+//     const result = await axiosSecure.patch(
+//       `/my-task/${data._id}?email=${user?.email}`,
+//       updateData
+//     );
+//     if (result.data.modifiedCount > 0) {
+//       Swal.fire({
+//         position: "top-end",
+//         icon: "success",
+//         title: "Your task has been updated",
+//         showConfirmButton: false,
+//         timer: 1500,
+//       });
+//       refetch();
+//       navigate(-1);
+//     }
+//   };
+
+//   return (
+//     <div className="px-2">
+//       <form
+//         onSubmit={handleUpdataTask}
+//         className="lg:max-w-5xl h-full mx-auto pt-10"
+//       >
+//         <div className="grid gap-6 mb-6 md:grid-cols-2">
+//           <div>
+//             <label
+//               htmlFor="task_title"
+//               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+//             >
+//               Task Title
+//             </label>
+//             <input
+//               defaultValue={data?.task_title}
+//               name="task_title"
+//               type="text"
+//               id="task_title"
+//               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+//               placeholder="Your Task Title"
+//               required
+//             />
+//           </div>
+//           <div>
+//             <label
+//               htmlFor="task_detail"
+//               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+//             >
+//               Task Detail
+//             </label>
+//             <input
+//               defaultValue={data?.task_detail}
+//               name="task_detail"
+//               type="text"
+//               id="task_detail"
+//               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+//               placeholder=" Your Task Detail"
+//               required
+//             />
+//           </div>
+
+//           <div>
+//             <label
+//               htmlFor="submission_info"
+//               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+//             >
+//               Submission Info
+//             </label>
+//             <input
+//               defaultValue={data?.submission_info}
+//               name="submission_info"
+//               type="text"
+//               id="submission_info"
+//               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+//               placeholder="Your Task Submission Info"
+//               required
+//             />
+//           </div>
+//         </div>
+
+//         <input
+//           className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+//           type="submit"
+//           value="Update Task"
+//         />
+//       </form>
+//     </div>
+//   );
+// };
+
+// export default UpdateTask;
+
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
 import { useContext } from "react";
 import { AuthContext } from "../../Providers/AuthProvider";
+import { ThemeContext } from "../../provider/ThemeProvider";
 
 const UpdateTask = () => {
   const { user } = useContext(AuthContext);
+  const { theme } = useContext(ThemeContext); // Access the theme context
   const axiosSecure = useAxiosSecure();
   const id = useParams().id;
   const navigate = useNavigate();
@@ -25,7 +150,7 @@ const UpdateTask = () => {
     const task_title = form.task_title.value;
     const task_detail = form.task_detail.value;
     const submission_info = form.submission_info.value;
-    
+
     const updateData = {
       task_title,
       task_detail,
@@ -48,6 +173,21 @@ const UpdateTask = () => {
     }
   };
 
+  // Conditional class names based on theme
+  const bgClass = theme === "light" ? "bg-white" : "bg-gray-800";
+  const textClass = theme === "light" ? "text-gray-900" : "text-white";
+  const borderClass = theme === "light" ? "border-gray-300" : "border-gray-600";
+  const inputBgClass = theme === "light" ? "bg-gray-50" : "bg-gray-700";
+  const inputFocusClass =
+    theme === "light"
+      ? "focus:ring-blue-500 focus:border-blue-500"
+      : "focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500";
+  const buttonBgClass =
+    theme === "light"
+      ? "bg-blue-700 hover:bg-blue-800"
+      : "bg-blue-600 hover:bg-blue-700";
+  const buttonTextClass = theme === "light" ? "text-white" : "text-white";
+
   return (
     <div className="px-2">
       <form
@@ -58,7 +198,7 @@ const UpdateTask = () => {
           <div>
             <label
               htmlFor="task_title"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              className={`block mb-2 text-sm font-medium ${textClass}`}
             >
               Task Title
             </label>
@@ -67,7 +207,7 @@ const UpdateTask = () => {
               name="task_title"
               type="text"
               id="task_title"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className={`border ${borderClass} ${inputBgClass} ${textClass} text-sm rounded-lg block w-full p-2.5 ${inputFocusClass}`}
               placeholder="Your Task Title"
               required
             />
@@ -75,7 +215,7 @@ const UpdateTask = () => {
           <div>
             <label
               htmlFor="task_detail"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              className={`block mb-2 text-sm font-medium ${textClass}`}
             >
               Task Detail
             </label>
@@ -84,8 +224,8 @@ const UpdateTask = () => {
               name="task_detail"
               type="text"
               id="task_detail"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder=" Your Task Detail"
+              className={`border ${borderClass} ${inputBgClass} ${textClass} text-sm rounded-lg block w-full p-2.5 ${inputFocusClass}`}
+              placeholder="Your Task Detail"
               required
             />
           </div>
@@ -93,7 +233,7 @@ const UpdateTask = () => {
           <div>
             <label
               htmlFor="submission_info"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              className={`block mb-2 text-sm font-medium ${textClass}`}
             >
               Submission Info
             </label>
@@ -102,7 +242,7 @@ const UpdateTask = () => {
               name="submission_info"
               type="text"
               id="submission_info"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className={`border ${borderClass} ${inputBgClass} ${textClass} text-sm rounded-lg block w-full p-2.5 ${inputFocusClass}`}
               placeholder="Your Task Submission Info"
               required
             />
@@ -110,7 +250,7 @@ const UpdateTask = () => {
         </div>
 
         <input
-          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          className={`${buttonBgClass} ${buttonTextClass} font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center focus:ring-4 focus:outline-none`}
           type="submit"
           value="Update Task"
         />
