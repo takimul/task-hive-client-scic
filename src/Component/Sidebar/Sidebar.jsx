@@ -46,7 +46,7 @@ const Sidebar = () => {
     <>
       {/* Small Screen Navbar */}
       <div
-        className={`bg-gray-100 text-gray-800 flex justify-between md:hidden ${sidebarBg}`}
+        className={`bg-gray-100 text-gray-800 flex justify-between md:hidden ${sidebarBg} `}
       >
         <div>
           <div className="block cursor-pointer p-4 font-bold">
@@ -69,7 +69,7 @@ const Sidebar = () => {
 
       {/* Sidebar */}
       <div
-        className={`z-10 md:fixed flex flex-col justify-between overflow-x-hidden w-64 space-y-6 px-2 py-4 absolute inset-y-0 left-0 transform ${
+        className={`z-10 md:fixed flex flex-col justify-between overflow-x-hidden w-64 space-y-6 px-2 py-4 absolute inset-y-0 left-0 transform border-r-4 border-base-300 ${
           isActive && "-translate-x-full"
         } md:translate-x-0 transition duration-200 ease-in-out ${sidebarBg}`}
       >

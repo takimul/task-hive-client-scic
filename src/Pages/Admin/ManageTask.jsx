@@ -50,7 +50,7 @@ const ManageTask = () => {
       <Helmet>
         <title>Manage Tasks | TaskHive</title>
       </Helmet>
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto md:mx-6">
         <table
           className={`table ${theme === "light" ? "text-black" : "text-white"}`}
         >
